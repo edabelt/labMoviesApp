@@ -36,6 +36,7 @@ interface Genre {
 }
 
 interface FilterMoviesCardProps {
+  onUserInput: (f: FilterOption, s: string) => void;
   titleFilter: string;
   genreFilter: string;
 }
@@ -43,6 +44,7 @@ interface FilterMoviesCardProps {
 const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
   titleFilter,
   genreFilter,
+  onUserInput,
 }) => {
   const [genres, setGenres] = useState<Genre[]>([
     { id: 0, name: "All" },
@@ -56,21 +58,32 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
     )
       .then((res) => res.json())
       .then((json) => {
-        setGenres([{ id: 0, name: "All" }, ...json.genres]);
+        setGenres([
+          { id: 0, name: "All" },
+          ...json.genres,
+        ]);
       });
   }, []);
 
-  const handleChange = (type: FilterOption, value: string) => {
-    // To be completed later
-    console.log(type, value);
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
+    type: FilterOption,
+    value: string
+  ) => {
+    e.preventDefault();
+    onUserInput(type, value);
   };
 
-  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange("title", e.target.value);
+  const handleTextChange = (
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    handleChange(e, "title", e.target.value);
   };
 
-  const handleGenreChange = (e: SelectChangeEvent<string>) => {
-    handleChange("genre", e.target.value);
+  const handleGenreChange = (
+    e: SelectChangeEvent<string>
+  ) => {
+    handleChange(e, "genre", e.target.value);
   };
 
   return (
@@ -93,7 +106,9 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
           />
 
           <FormControl sx={styles.formControl}>
-            <InputLabel id="genre-label">Genre</InputLabel>
+            <InputLabel id="genre-label">
+              Genre
+            </InputLabel>
 
             <Select
               labelId="genre-label"
