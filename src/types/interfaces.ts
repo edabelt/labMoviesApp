@@ -19,6 +19,7 @@ export interface BaseMovieProps {
 
 export interface BaseMovieListProps {
   movies: BaseMovieProps[];
+  genre_ids?: number[];
 }
 
 export interface MovieDetailsProps extends BaseMovieProps {
@@ -47,3 +48,5 @@ export interface MoviePageProps {
   movie: MovieDetailsProps;
   images: MovieImage[];
 }
+
+export type FilterOption = "title" | "genre";
