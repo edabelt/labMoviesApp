@@ -33,9 +33,10 @@ const styles = {
 
 interface MovieCardProps {
   movie: BaseMovieProps;
+  action: (m: BaseMovieProps) => React.ReactNode;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({movie}) => {
+const MovieCard: React.FC<MovieCardProps> = ({movie, action}) => {
   const { favourites, addToFavourites } = useContext(MoviesContext);//NEW
 
 const isFavourite = favourites.find((id) => id === movie.id)? true : false;//NEW
@@ -91,12 +92,8 @@ const isFavourite = favourites.find((id) => id === movie.id)? true : false;//NEW
       </CardContent>
 
       <CardActions disableSpacing>
-        <IconButton
-          aria-label="add to favourites"
-          onClick={handleAddToFavourite}
-        >
-          <FavoriteIcon color="primary" fontSize="large" />
-        </IconButton>
+            {action(movie)}
+
 
         <Link to={`/movies/${movie.id}`}>
           <Button
