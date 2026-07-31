@@ -13,32 +13,51 @@ import FavouriteMoviesPage from "./pages/favouriteMoviesPage";
 import MovieReviewPage from "./pages/movieReviewPage";
 import UpcomingMoviesPage from "./pages/upcomingMoviesPage";
 import SiteHeader from "./components/siteHeader";
+import { QueryClientProvider, QueryClient } from "react-query";
+import { ReactQueryDevtools } from 'react-query/devtools';
+import MoviesContextProvider from "./contexts/moviesContext";
+
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 360000,
+      refetchInterval: 360000, 
+      refetchOnWindowFocus: false
+    },
+  },
+});
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <SiteHeader />
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <SiteHeader />
+          <MoviesContextProvider>
 
-      <Routes>
-        <Route path="/reviews/:id" element={<MovieReviewPage />} />
+            <Routes>
+              <Route path="/reviews/:id" element={<MovieReviewPage />} />
 
-        <Route
-          path="/movies/favourites"
-          element={<FavouriteMoviesPage />}
-        />
+              <Route
+                path="/movies/favourites"
+                element={<FavouriteMoviesPage />}
+              />
 
-        <Route
-          path="/movies/upcoming"
-          element={<UpcomingMoviesPage />}
-        />
+              <Route
+                path="/movies/upcoming"
+                element={<UpcomingMoviesPage />}
+              />
 
-        <Route path="/movies/:id" element={<MoviePage />} />
+              <Route path="/movies/:id" element={<MoviePage />} />
 
-        <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<HomePage />} />
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </BrowserRouter>
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </MoviesContextProvider>
+      </BrowserRouter>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 };
 
@@ -46,4 +65,4 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-);
+)

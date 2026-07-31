@@ -1,11 +1,10 @@
-import React, {
-  useEffect,
-  useState,
-  type ChangeEvent,
-} from "react";
+import React, { type ChangeEvent } from "react";
 
 import type { SelectChangeEvent } from "@mui/material";
-import type { FilterOption } from "../../types/interfaces";
+import type {
+  FilterOption,
+  GenreData,
+} from "../../types/interfaces";
 
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -18,12 +17,16 @@ import Select from "@mui/material/Select";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SortIcon from "@mui/icons-material/Sort";
+
+import { useQuery } from "react-query";
 import { getGenres } from "../../api/tmdb-api";
+import Spinner from "../spinner";
 
 const styles = {
   root: {
     maxWidth: 345,
   },
+
   formControl: {
     margin: 1,
     minWidth: 220,
@@ -31,13 +34,8 @@ const styles = {
   },
 };
 
-interface Genre {
-  id: number;
-  name: string;
-}
-
 interface FilterMoviesCardProps {
-  onUserInput: (f: FilterOption, s: string) => void;
+  onUserInput: (filter: FilterOption, value: string) => void;
   titleFilter: string;
   genreFilter: string;
 }
@@ -47,37 +45,47 @@ const FilterMoviesCard: React.FC<FilterMoviesCardProps> = ({
   genreFilter,
   onUserInput,
 }) => {
-  const [genres, setGenres] = useState<Genre[]>([
+  const {
+    data,
+    error,
+    isLoading,
+    isError,
+  } = useQuery<GenreData, Error>("genres", getGenres);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  if (isError) {
+    return <h1>{error?.message}</h1>;
+  }
+
+  const genres = [
     { id: 0, name: "All" },
-  ]);
-
-    useEffect(() => {
-    getGenres().then((allGenres) => {
-      setGenres([genres[0], ...allGenres]);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
+    ...(data?.genres ?? []),
+  ];
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
+    event:
+      | ChangeEvent<HTMLInputElement>
+      | SelectChangeEvent<string>,
     type: FilterOption,
     value: string
   ) => {
-    e.preventDefault();
+    event.preventDefault();
     onUserInput(type, value);
   };
 
   const handleTextChange = (
-    e: ChangeEvent<HTMLInputElement>
+    event: ChangeEvent<HTMLInputElement>
   ) => {
-    handleChange(e, "title", e.target.value);
+    handleChange(event, "title", event.target.value);
   };
 
   const handleGenreChange = (
-    e: SelectChangeEvent<string>
+    event: SelectChangeEvent<string>
   ) => {
-    handleChange(e, "genre", e.target.value);
+    handleChange(event, "genre", event.target.value);
   };
 
   return (
