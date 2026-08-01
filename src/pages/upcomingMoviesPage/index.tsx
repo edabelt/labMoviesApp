@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MovieListPageTemplate from "../../components/templateMovieListPage";
+import AddToFavouritesIcon from "../../components/cardIcons/addToFavourites";
 import { getUpcomingMovies } from "../../api/tmdb-api";
 import { BaseMovieProps } from "../../types/interfaces";
 
@@ -7,25 +8,6 @@ const UpcomingMoviesPage: React.FC = () => {
   const [movies, setMovies] = useState<BaseMovieProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const addToFavourites = (movieId: number) => {
-    const updatedMovies = movies.map((movie) =>
-      movie.id === movieId
-        ? { ...movie, favourite: true }
-        : movie
-    );
-
-    setMovies(updatedMovies);
-
-    const favourites = updatedMovies.filter(
-      (movie) => movie.favourite
-    );
-
-    localStorage.setItem(
-      "favourites",
-      JSON.stringify(favourites)
-    );
-  };
 
   useEffect(() => {
     getUpcomingMovies()
@@ -53,7 +35,9 @@ const UpcomingMoviesPage: React.FC = () => {
     <MovieListPageTemplate
       title="Upcoming Movies"
       movies={movies}
-      selectFavourite={addToFavourites}
+      action={(movie: BaseMovieProps) => (
+        <AddToFavouritesIcon {...movie} />
+      )}
     />
   );
 };
