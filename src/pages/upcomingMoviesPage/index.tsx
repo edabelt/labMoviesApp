@@ -1,40 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "react-query";
 import MovieListPageTemplate from "../../components/templateMovieListPage";
 import AddToMustWatchIcon from "../../components/cardIcons/addToMustWatch";
+import Spinner from "../../components/spinner";
 import { getUpcomingMovies } from "../../api/tmdb-api";
 import { BaseMovieProps } from "../../types/interfaces";
 
 const UpcomingMoviesPage: React.FC = () => {
-  const [movies, setMovies] = useState<BaseMovieProps[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const {
+    data: movies,
+    error,
+    isLoading,
+    isError,
+  } = useQuery<BaseMovieProps[], Error>(
+    "upcomingMovies",
+    getUpcomingMovies
+  );
 
-  useEffect(() => {
-    getUpcomingMovies()
-      .then((upcomingMovies) => {
-        console.log("Upcoming movies:", upcomingMovies);
-        setMovies(upcomingMovies);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Upcoming movies error:", err);
-        setError("Unable to load upcoming movies.");
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <h2>Loading upcoming movies...</h2>;
+  if (isLoading) {
+    return <Spinner />;
   }
 
-  if (error) {
-    return <h2>{error}</h2>;
+  if (isError) {
+    return <h1>{error.message}</h1>;
   }
 
   return (
     <MovieListPageTemplate
       title="Upcoming Movies"
-      movies={movies}
+      movies={movies ?? []}
       action={() => <AddToMustWatchIcon />}
     />
   );
