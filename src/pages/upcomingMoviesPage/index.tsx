@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MovieListPageTemplate from "../../components/templateMovieListPage";
-import AddToFavouritesIcon from "../../components/cardIcons/addToFavourites";
+import AddToMustWatchIcon from "../../components/cardIcons/addToMustWatch";
 import { getUpcomingMovies } from "../../api/tmdb-api";
 import { BaseMovieProps } from "../../types/interfaces";
 
@@ -35,9 +35,7 @@ const UpcomingMoviesPage: React.FC = () => {
     <MovieListPageTemplate
       title="Upcoming Movies"
       movies={movies}
-      action={(movie: BaseMovieProps) => (
-        <AddToFavouritesIcon {...movie} />
-      )}
+      action={() => <AddToMustWatchIcon />}
     />
   );
 };
