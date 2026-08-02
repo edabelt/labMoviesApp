@@ -29,7 +29,9 @@ const UpcomingMoviesPage: React.FC = () => {
     <MovieListPageTemplate
       title="Upcoming Movies"
       movies={movies ?? []}
-      action={() => <AddToMustWatchIcon />}
+      action={(movie: BaseMovieProps) => (
+        <AddToMustWatchIcon {...movie} />
+      )}
     />
   );
 };

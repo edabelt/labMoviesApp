@@ -40,11 +40,6 @@ const MovieCard: React.FC<MovieCardProps> = ({movie, action}) => {
   const { favourites, addToFavourites } = useContext(MoviesContext);//NEW
 
 const isFavourite = favourites.find((id) => id === movie.id)? true : false;//NEW
- 
-  const handleAddToFavourite = (e: MouseEvent<HTMLButtonElement>) => {//NEW
-    e.preventDefault();
-    addToFavourites(movie);
-  };
 
   return (
       <Card sx={styles.card}>
