@@ -60,8 +60,6 @@ export interface Review{
     content: string
     author: string
 }
-
-   .... as before .....
    
 export interface GenreData {
   genres: {
@@ -83,5 +81,11 @@ export interface DiscoverMovies {
     agree: boolean,
     rating: number,
     movieId: number,
+  }
+
+  export interface Actor {
+    id: number,
+    name: string,
+    profile_path: string,
   }
 

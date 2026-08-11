@@ -1,3 +1,5 @@
+import type { Actor } from "../types/interfaces";
+
 export const getMovies = () => {
   return fetch(
     `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&include_adult=false&include_video=false&page=1`
@@ -63,11 +65,24 @@ export const getMovieReviews = (id: string | number) => {
     .then((json) => json.results);
 };
 
-// New function for the Upcoming Movies page
 export const getUpcomingMovies = () => {
   return fetch(
     `https://api.themoviedb.org/3/movie/upcoming?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=1`
   )
     .then((res) => res.json())
+    .then((json) => json.results);
+};
+
+export const getPopularActors = () => {
+  return fetch(
+    `https://api.themoviedb.org/3/person/popular?api_key=${import.meta.env.VITE_TMDB_KEY}&language=en-US&page=1`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch popular actors");
+      }
+
+      return response.json();
+    })
     .then((json) => json.results);
 };
