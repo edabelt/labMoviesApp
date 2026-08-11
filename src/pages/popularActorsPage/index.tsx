@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "react-query";
 import Spinner from "../../components/spinner";
+import ActorListPageTemplate from "../../components/templateActorListPage";
 import { getPopularActors } from "../../api/tmdb-api";
 import { Actor } from "../../types/interfaces";
 
@@ -10,10 +11,7 @@ const PopularActorsPage: React.FC = () => {
     error,
     isLoading,
     isError,
-  } = useQuery<Actor[], Error>(
-    "popularActors",
-    getPopularActors
-  );
+  } = useQuery<Actor[], Error>("popularActors", getPopularActors);
 
   if (isLoading) {
     return <Spinner />;
@@ -24,14 +22,11 @@ const PopularActorsPage: React.FC = () => {
   }
 
   return (
-  <>
-    <h1>Popular Actors</h1>
-
-    {actors?.map((actor) => (
-      <h2 key={actor.id}>{actor.name}</h2>
-    ))}
-  </>
-);
+    <ActorListPageTemplate
+      title="Popular Actors"
+      actors={actors ?? []}
+    />
+  );
 };
 
 export default PopularActorsPage;
