@@ -19,7 +19,7 @@ export interface BaseMovieProps {
 
 export interface BaseMovieListProps {
   movies: BaseMovieProps[];
-  selectFavourite: (movieId: number) => void;  //add this
+  selectFavourite: (movieId: number) => void;
 }
 
 export interface MovieDetailsProps extends BaseMovieProps {
@@ -55,37 +55,47 @@ export interface MovieListPageTemplateProps extends BaseMovieListProps {
   title: string;
 }
 
-export interface Review{
-    id: string;
-    content: string
-    author: string
+export interface Review {
+  author: string;
+  content: string;
+  agree: boolean;
+  rating: number;
+  movieId: number;
 }
-   
+
+export interface ActorReview {
+  author: string;
+  content: string;
+  agree: boolean;
+  rating: number;
+  actorId: number;
+}
+
 export interface GenreData {
   genres: {
     id: string;
-    name: string
+    name: string;
   }[];
 }
 
 export interface DiscoverMovies {
-  page: number;	
+  page: number;
   total_pages: number;
   total_results: number;
   results: BaseMovieProps[];
 }
 
-  export interface Review {
-    author: string,
-    content: string,
-    agree: boolean,
-    rating: number,
-    movieId: number,
-  }
+export interface Actor {
+  id: number;
+  name: string;
+  profile_path: string;
+}
 
-  export interface Actor {
-    id: number,
-    name: string,
-    profile_path: string,
-  }
-
+export interface ActorDetailsProps extends Actor {
+  biography: string;
+  birthday: string | null;
+  deathday: string | null;
+  place_of_birth: string | null;
+  popularity: number;
+  known_for_department: string;
+}

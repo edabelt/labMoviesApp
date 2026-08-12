@@ -13,11 +13,13 @@ const styles = {
 interface ActorListPageTemplateProps {
   actors: Actor[];
   title: string;
+  action: (actor: Actor) => React.ReactNode;
 }
 
 const ActorListPageTemplate: React.FC<ActorListPageTemplateProps> = ({
   actors,
   title,
+  action,
 }) => {
   return (
     <Grid container sx={styles.root}>
@@ -26,7 +28,7 @@ const ActorListPageTemplate: React.FC<ActorListPageTemplateProps> = ({
       </Grid>
 
       <Grid item container spacing={5}>
-        <ActorList actors={actors} />
+        <ActorList actors={actors} action={action} />
       </Grid>
     </Grid>
   );

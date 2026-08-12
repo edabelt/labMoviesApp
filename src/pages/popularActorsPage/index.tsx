@@ -4,6 +4,7 @@ import Spinner from "../../components/spinner";
 import ActorListPageTemplate from "../../components/templateActorListPage";
 import { getPopularActors } from "../../api/tmdb-api";
 import { Actor } from "../../types/interfaces";
+import AddActorToFavouritesIcon from "../../components/cardIcons/addActorToFavourites";
 
 const PopularActorsPage: React.FC = () => {
   const {
@@ -25,6 +26,9 @@ const PopularActorsPage: React.FC = () => {
     <ActorListPageTemplate
       title="Popular Actors"
       actors={actors ?? []}
+      action={(actor: Actor) => {
+        return <AddActorToFavouritesIcon {...actor} />;
+      }}
     />
   );
 };
