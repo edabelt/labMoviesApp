@@ -30,8 +30,12 @@ interface ActorCardProps {
   action: (actor: Actor) => React.ReactNode;
 }
 
-const ActorCard: React.FC<ActorCardProps> = ({ actor, action }) => {
-  const { favourites } = useContext(ActorsContext);
+const ActorCard: React.FC<ActorCardProps> = ({
+  actor,
+  action,
+}) => {
+
+  const { favourites } = useContext(ActorsContext);  
 
   const isFavourite = favourites.find((id) => id === actor.id)
     ? true

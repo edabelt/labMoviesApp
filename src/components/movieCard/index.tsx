@@ -1,4 +1,4 @@
-import React, { useContext, type MouseEvent } from "react";
+import React, { useContext } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -7,7 +7,6 @@ import CardHeader from "@mui/material/CardHeader";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
 
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -33,29 +32,28 @@ const styles = {
 
 interface MovieCardProps {
   movie: BaseMovieProps;
-  action: (m: BaseMovieProps) => React.ReactNode;
+  action: (movie: BaseMovieProps) => React.ReactNode;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({movie, action}) => {
-  const { favourites, addToFavourites } = useContext(MoviesContext);//NEW
+const MovieCard: React.FC<MovieCardProps> = ({
+  movie,
+  action,
+}) => {
+  const { favourites } = useContext(MoviesContext);
 
-const isFavourite = favourites.find((id) => id === movie.id)? true : false;//NEW
+  const isFavourite = favourites.includes(movie.id);
 
   return (
-      <Card sx={styles.card}>
+    <Card sx={styles.card}>
       <CardHeader
         avatar={
-          isFavourite ? (   //CHANGED
+          isFavourite ? (
             <Avatar sx={styles.avatar}>
               <FavoriteIcon />
             </Avatar>
           ) : null
         }
-        title={
-          <Typography variant="h5" component="p">
-            {movie.title}{" "}
-          </Typography>
-        }
+        title={movie.title}
       />
 
       <CardMedia
@@ -72,6 +70,7 @@ const isFavourite = favourites.find((id) => id === movie.id)? true : false;//NEW
           <Grid item xs={6}>
             <Typography variant="h6" component="p">
               <CalendarIcon fontSize="small" />
+              {" "}
               {movie.release_date}
             </Typography>
           </Grid>
@@ -79,16 +78,15 @@ const isFavourite = favourites.find((id) => id === movie.id)? true : false;//NEW
           <Grid item xs={6}>
             <Typography variant="h6" component="p">
               <StarRateIcon fontSize="small" />
-              {"  "}
-              {movie.vote_average}{" "}
+              {" "}
+              {movie.vote_average}
             </Typography>
           </Grid>
         </Grid>
       </CardContent>
 
       <CardActions disableSpacing>
-            {action(movie)}
-
+        {action(movie)}
 
         <Link to={`/movies/${movie.id}`}>
           <Button

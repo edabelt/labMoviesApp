@@ -23,7 +23,7 @@ const ActorsContextProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const [favourites, setFavourites] = useState<number[]>([]);
 
-  const [myReviews, setMyReviews] = useState<
+  const [, setMyReviews] = useState<
     Record<number, ActorReview>
   >({});
 

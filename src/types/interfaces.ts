@@ -1,6 +1,9 @@
+import type { ReactNode } from "react";
+
 export interface BaseMovieProps {
   title: string;
   budget: number;
+  genre_ids: number[];
   homepage: string | undefined;
   id: number;
   imdb_id: string;
@@ -19,7 +22,7 @@ export interface BaseMovieProps {
 
 export interface BaseMovieListProps {
   movies: BaseMovieProps[];
-  selectFavourite: (movieId: number) => void;
+  action: (movie: BaseMovieProps) => ReactNode;
 }
 
 export interface MovieDetailsProps extends BaseMovieProps {
@@ -56,6 +59,7 @@ export interface MovieListPageTemplateProps extends BaseMovieListProps {
 }
 
 export interface Review {
+  id?: string;
   author: string;
   content: string;
   agree: boolean;

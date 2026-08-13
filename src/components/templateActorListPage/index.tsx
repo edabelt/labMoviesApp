@@ -16,21 +16,22 @@ interface ActorListPageTemplateProps {
   action: (actor: Actor) => React.ReactNode;
 }
 
-const ActorListPageTemplate: React.FC<ActorListPageTemplateProps> = ({
-  actors,
-  title,
-  action,
-}) => {
+const ActorListPageTemplate: React.FC<
+  ActorListPageTemplateProps
+> = ({ actors, title, action }) => {
   return (
-    <Grid container sx={styles.root}>
-      <Grid item xs={12}>
-        <Header title={title} />
-      </Grid>
+    <>
+      <Header title={title} />
 
-      <Grid item container spacing={5}>
-        <ActorList actors={actors} action={action} />
+      <Grid container sx={styles.root}>
+        <Grid item container spacing={5}>
+          <ActorList
+            actors={actors}
+            action={action}
+          />
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 
