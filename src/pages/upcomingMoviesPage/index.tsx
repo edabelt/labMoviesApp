@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useQuery } from "react-query";
+
 import MovieListPageTemplate from "../../components/templateMovieListPage";
 import AddToMustWatchIcon from "../../components/cardIcons/addToMustWatch";
 import Spinner from "../../components/spinner";
 import { getUpcomingMovies } from "../../api/tmdb-api";
+import { AuthContext } from "../../contexts/authContext";
 import { BaseMovieProps } from "../../types/interfaces";
 
 const UpcomingMoviesPage: React.FC = () => {
+  const { user } = useContext(AuthContext);
+
   const {
     data: movies,
     error,
@@ -29,9 +33,11 @@ const UpcomingMoviesPage: React.FC = () => {
     <MovieListPageTemplate
       title="Upcoming Movies"
       movies={movies ?? []}
-      action={(movie: BaseMovieProps) => (
-        <AddToMustWatchIcon {...movie} />
-      )}
+      action={(movie: BaseMovieProps) => {
+        return user ? (
+          <AddToMustWatchIcon {...movie} />
+        ) : null;
+      }}
     />
   );
 };

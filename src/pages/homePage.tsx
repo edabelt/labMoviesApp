@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useQuery } from "react-query";
+
 import PageTemplate from "../components/templateMovieListPage";
 import { getMovies } from "../api/tmdb-api";
 import useFiltering from "../hooks/useFiltering";
@@ -6,17 +8,20 @@ import MovieFilterUI, {
   titleFilter,
   genreFilter,
 } from "../components/movieFilterUI";
-import { useQuery } from "react-query";
 import Spinner from "../components/spinner";
-import AddToFavouritesIcon from '../components/cardIcons/addToFavourites'
-import { DiscoverMovies, BaseMovieProps } from "../types/interfaces";
-
+import AddToFavouritesIcon from "../components/cardIcons/addToFavourites";
+import { AuthContext } from "../contexts/authContext";
+import {
+  DiscoverMovies,
+  BaseMovieProps,
+} from "../types/interfaces";
 
 const titleFiltering = {
   name: "title",
   value: "",
   condition: titleFilter,
 };
+
 const genreFiltering = {
   name: "genre",
   value: "0",
@@ -24,10 +29,26 @@ const genreFiltering = {
 };
 
 const HomePage: React.FC = () => {
-  const { data, error, isLoading, isError } = useQuery<DiscoverMovies, Error>("discover", getMovies);
-  const { filterValues, setFilterValues, filterFunction } = useFiltering(
-    [titleFiltering, genreFiltering]
+  const { user } = useContext(AuthContext);
+
+  const {
+    data,
+    error,
+    isLoading,
+    isError,
+  } = useQuery<DiscoverMovies, Error>(
+    "discover",
+    getMovies
   );
+
+  const {
+    filterValues,
+    setFilterValues,
+    filterFunction,
+  } = useFiltering([
+    titleFiltering,
+    genreFiltering,
+  ]);
 
   if (isLoading) {
     return <Spinner />;
@@ -37,13 +58,20 @@ const HomePage: React.FC = () => {
     return <h1>{error.message}</h1>;
   }
 
+  const changeFilterValues = (
+    type: string,
+    value: string
+  ) => {
+    const changedFilter = {
+      name: type,
+      value,
+    };
 
-  const changeFilterValues = (type: string, value: string) => {
-    const changedFilter = { name: type, value: value };
     const updatedFilterSet =
       type === "title"
         ? [changedFilter, filterValues[1]]
         : [filterValues[0], changedFilter];
+
     setFilterValues(updatedFilterSet);
   };
 
@@ -56,9 +84,12 @@ const HomePage: React.FC = () => {
         title="Discover Movies"
         movies={displayedMovies}
         action={(movie: BaseMovieProps) => {
-          return <AddToFavouritesIcon {...movie} />
+          return user ? (
+            <AddToFavouritesIcon {...movie} />
+          ) : null;
         }}
       />
+
       <MovieFilterUI
         onFilterValuesChange={changeFilterValues}
         titleFilter={filterValues[0].value}
@@ -67,4 +98,5 @@ const HomePage: React.FC = () => {
     </>
   );
 };
+
 export default HomePage;

@@ -2,11 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import {
   BrowserRouter,
-  Route,
   Navigate,
+  Route,
   Routes,
 } from "react-router-dom";
-import { QueryClientProvider, QueryClient } from "react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 import HomePage from "./pages/homePage";
@@ -18,11 +21,16 @@ import AddMovieReviewPage from "./pages/addMovieReviewPage";
 import PopularActorsPage from "./pages/popularActorsPage";
 import ActorDetailsPage from "./pages/actorDetailsPage";
 import FavouriteActorsPage from "./pages/favouriteActorsPage";
+import AddActorReviewPage from "./pages/addActorReviewPage";
+import SignUpPage from "./pages/signUpPage";
+import LoginPage from "./pages/loginPage";
 
 import SiteHeader from "./components/siteHeader";
+import ProtectedRoute from "./components/protectedRoute";
+
 import MoviesContextProvider from "./contexts/moviesContext";
 import ActorsContextProvider from "./contexts/actorsContext";
-import AddActorReviewPage from "./pages/addActorReviewPage";
+import AuthContextProvider from "./contexts/authContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,66 +42,92 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <ActorsContextProvider>
-          <MoviesContextProvider>
-            <SiteHeader />
+        <AuthContextProvider>
+          <ActorsContextProvider>
+            <MoviesContextProvider>
+              <SiteHeader />
 
-            <Routes>
-              <Route
-                path="/reviews/form"
-                element={<AddMovieReviewPage />}
-              />
+              <Routes>
+                <Route
+                  path="/reviews/form"
+                  element={<AddMovieReviewPage />}
+                />
 
-              <Route
-                path="/reviews/:id"
-                element={<MovieReviewPage />}
-              />
+                <Route
+                  path="/reviews/:id"
+                  element={<MovieReviewPage />}
+                />
 
-              <Route
-                path="/movies/favourites"
-                element={<FavouriteMoviesPage />}
-              />
+                <Route
+                  path="/movies/favourites"
+                  element={
+                    <ProtectedRoute>
+                      <FavouriteMoviesPage />
+                    </ProtectedRoute>
+                  }
+                />
 
-              <Route
-                path="/movies/upcoming"
-                element={<UpcomingMoviesPage />}
-              />
+                <Route
+                  path="/movies/upcoming"
+                  element={<UpcomingMoviesPage />}
+                />
 
-              <Route
-                path="/actors/reviews/form"
-                element={<AddActorReviewPage />}
-              />
+                <Route
+                  path="/actors/reviews/form"
+                  element={<AddActorReviewPage />}
+                />
 
-              <Route
-                path="/actors/favourites"
-                element={<FavouriteActorsPage />}
-              />
+                <Route
+                  path="/actors/favourites"
+                  element={
+                    <ProtectedRoute>
+                      <FavouriteActorsPage />
+                    </ProtectedRoute>
+                  }
+                />
 
-              <Route
-                path="/actors"
-                element={<PopularActorsPage />}
-              />
+                <Route
+                  path="/actors"
+                  element={<PopularActorsPage />}
+                />
 
-              <Route
-                path="/actors/:id"
-                element={<ActorDetailsPage />}
-              />
+                <Route
+                  path="/actors/:id"
+                  element={<ActorDetailsPage />}
+                />
 
-              <Route
-                path="/movies/:id"
-                element={<MoviePage />}
-              />
+                <Route
+                  path="/signup"
+                  element={<SignUpPage />}
+                />
 
-              <Route path="/" element={<HomePage />} />
+                <Route
+                  path="/login"
+                  element={<LoginPage />}
+                />
 
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </MoviesContextProvider>
-        </ActorsContextProvider>
+                <Route
+                  path="/movies/:id"
+                  element={<MoviePage />}
+                />
+
+                <Route
+                  path="/"
+                  element={<HomePage />}
+                />
+
+                <Route
+                  path="*"
+                  element={<Navigate to="/" />}
+                />
+              </Routes>
+            </MoviesContextProvider>
+          </ActorsContextProvider>
+        </AuthContextProvider>
       </BrowserRouter>
 
       <ReactQueryDevtools initialIsOpen={false} />
@@ -101,7 +135,9 @@ const App = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+ReactDOM.createRoot(
+  document.getElementById("root")!
+).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>

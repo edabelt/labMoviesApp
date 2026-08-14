@@ -1,4 +1,8 @@
-import React, { useState, MouseEvent } from "react";
+import React, {
+  MouseEvent,
+  useContext,
+  useState,
+} from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -12,47 +16,114 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-const styles = {
-    title: {
-      flexGrow: 1,
-    },
-  };
+import { AuthContext } from "../../contexts/authContext";
+import { supabase } from "../../supabaseClient";
 
-const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
+const styles = {
+  title: {
+    flexGrow: 1,
+  },
+};
+
+const Offset = styled("div")(
+  ({ theme }) => theme.mixins.toolbar
+);
 
 const SiteHeader: React.FC = () => {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement|null>(null);
+  const { user } = useContext(AuthContext);
+
+  const [anchorEl, setAnchorEl] =
+    useState<HTMLButtonElement | null>(null);
+
   const open = Boolean(anchorEl);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const menuOptions = [
-  { label: "Home", path: "/" },
-  { label: "Upcoming", path: "/movies/upcoming" },
-  { label: "Favorites", path: "/movies/favourites" },
-  { label: "Actors", path: "/actors" },
-  { label: "Favorite Actors", path: "/actors/favourites" },
-];
+  const isMobile = useMediaQuery(
+    theme.breakpoints.down("lg")
+  );
 
-  const handleMenuSelect = (pageURL: string) => {
-    navigate(pageURL);
+  const publicOptions = [
+    { label: "Home", path: "/" },
+    { label: "Upcoming", path: "/movies/upcoming" },
+    { label: "Actors", path: "/actors" },
+  ];
+
+  const authenticatedOptions = [
+    {
+      label: "Favorites",
+      path: "/movies/favourites",
+    },
+    {
+      label: "Favorite Actors",
+      path: "/actors/favourites",
+    },
+    {
+      label: "Log Out",
+      path: "/logout",
+    },
+  ];
+
+  const guestOptions = [
+    { label: "Sign Up", path: "/signup" },
+    { label: "Log In", path: "/login" },
+  ];
+
+  const menuOptions = user
+    ? [...publicOptions, ...authenticatedOptions]
+    : [...publicOptions, ...guestOptions];
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setAnchorEl(null);
+    navigate("/");
   };
 
-  const handleMenu = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleMenuSelect = (pageURL: string) => {
+    if (pageURL === "/logout") {
+      handleLogout();
+      return;
+    }
+
+    navigate(pageURL);
+    setAnchorEl(null);
+  };
+
+  const handleMenu = (
+    event: MouseEvent<HTMLButtonElement>
+  ) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const displayName =
+    user?.user_metadata.full_name ||
+    user?.email?.split("@")[0];
+
   return (
     <>
-      <AppBar position="fixed" elevation={0} color="primary">
+      <AppBar
+        position="fixed"
+        elevation={0}
+        color="primary"
+      >
         <Toolbar>
           <Typography variant="h4" sx={styles.title}>
             TMDB Client
           </Typography>
+
           <Typography variant="h6" sx={styles.title}>
             All you ever wanted to know about Movies!
           </Typography>
+
+          {user && (
+            <Typography
+              variant="body1"
+              sx={{ marginRight: 2 }}
+            >
+              Hello, {displayName}
+            </Typography>
+          )}
+
           {isMobile ? (
             <>
               <IconButton
@@ -65,6 +136,7 @@ const SiteHeader: React.FC = () => {
               >
                 <MenuIcon />
               </IconButton>
+
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -80,31 +152,36 @@ const SiteHeader: React.FC = () => {
                 open={open}
                 onClose={() => setAnchorEl(null)}
               >
-                {menuOptions.map((opt) => (
+                {menuOptions.map((option) => (
                   <MenuItem
-                    key={opt.label}
-                    onClick={() => handleMenuSelect(opt.path)}
+                    key={option.label}
+                    onClick={() =>
+                      handleMenuSelect(option.path)
+                    }
                   >
-                    {opt.label}
+                    {option.label}
                   </MenuItem>
                 ))}
               </Menu>
             </>
           ) : (
             <>
-              {menuOptions.map((opt) => (
+              {menuOptions.map((option) => (
                 <Button
-                  key={opt.label}
+                  key={option.label}
                   color="inherit"
-                  onClick={() => handleMenuSelect(opt.path)}
+                  onClick={() =>
+                    handleMenuSelect(option.path)
+                  }
                 >
-                  {opt.label}
+                  {option.label}
                 </Button>
               ))}
             </>
           )}
         </Toolbar>
       </AppBar>
+
       <Offset />
     </>
   );
