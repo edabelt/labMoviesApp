@@ -12,6 +12,7 @@ import {
 } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
+import LandingPage from "./pages/landingPage";
 import HomePage from "./pages/homePage";
 import MoviePage from "./pages/movieDetailsPage";
 import FavouriteMoviesPage from "./pages/favouriteMoviesPage";
@@ -24,8 +25,10 @@ import FavouriteActorsPage from "./pages/favouriteActorsPage";
 import AddActorReviewPage from "./pages/addActorReviewPage";
 import SignUpPage from "./pages/signUpPage";
 import LoginPage from "./pages/loginPage";
+import DashboardPage from "./pages/dashboardPage";
 
 import SiteHeader from "./components/siteHeader";
+import SiteFooter from "./components/siteFooter";
 import ProtectedRoute from "./components/protectedRoute";
 
 import MoviesContextProvider from "./contexts/moviesContext";
@@ -49,82 +52,108 @@ const App: React.FC = () => {
         <AuthContextProvider>
           <ActorsContextProvider>
             <MoviesContextProvider>
-              <SiteHeader />
+              <div
+                style={{
+                  minHeight: "100vh",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <SiteHeader />
 
-              <Routes>
-                <Route
-                  path="/reviews/form"
-                  element={<AddMovieReviewPage />}
-                />
+                <main style={{ flexGrow: 1 }}>
+                  <Routes>
+                    <Route
+                      path="/signup"
+                      element={<SignUpPage />}
+                    />
 
-                <Route
-                  path="/reviews/:id"
-                  element={<MovieReviewPage />}
-                />
+                    <Route
+                      path="/login"
+                      element={<LoginPage />}
+                    />
 
-                <Route
-                  path="/movies/favourites"
-                  element={
-                    <ProtectedRoute>
-                      <FavouriteMoviesPage />
-                    </ProtectedRoute>
-                  }
-                />
+                    <Route
+                      path="/movies"
+                      element={<HomePage />}
+                    />
 
-                <Route
-                  path="/movies/upcoming"
-                  element={<UpcomingMoviesPage />}
-                />
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ProtectedRoute>
+                          <DashboardPage />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                <Route
-                  path="/actors/reviews/form"
-                  element={<AddActorReviewPage />}
-                />
+                    <Route
+                      path="/movies/upcoming"
+                      element={<UpcomingMoviesPage />}
+                    />
 
-                <Route
-                  path="/actors/favourites"
-                  element={
-                    <ProtectedRoute>
-                      <FavouriteActorsPage />
-                    </ProtectedRoute>
-                  }
-                />
+                    <Route
+                      path="/movies/favourites"
+                      element={
+                        <ProtectedRoute>
+                          <FavouriteMoviesPage />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                <Route
-                  path="/actors"
-                  element={<PopularActorsPage />}
-                />
+                    <Route
+                      path="/movies/:id"
+                      element={<MoviePage />}
+                    />
 
-                <Route
-                  path="/actors/:id"
-                  element={<ActorDetailsPage />}
-                />
+                    <Route
+                      path="/reviews/form"
+                      element={<AddMovieReviewPage />}
+                    />
 
-                <Route
-                  path="/signup"
-                  element={<SignUpPage />}
-                />
+                    <Route
+                      path="/reviews/:id"
+                      element={<MovieReviewPage />}
+                    />
 
-                <Route
-                  path="/login"
-                  element={<LoginPage />}
-                />
+                    <Route
+                      path="/actors"
+                      element={<PopularActorsPage />}
+                    />
 
-                <Route
-                  path="/movies/:id"
-                  element={<MoviePage />}
-                />
+                    <Route
+                      path="/actors/favourites"
+                      element={
+                        <ProtectedRoute>
+                          <FavouriteActorsPage />
+                        </ProtectedRoute>
+                      }
+                    />
 
-                <Route
-                  path="/"
-                  element={<HomePage />}
-                />
+                    <Route
+                      path="/actors/reviews/form"
+                      element={<AddActorReviewPage />}
+                    />
 
-                <Route
-                  path="*"
-                  element={<Navigate to="/" />}
-                />
-              </Routes>
+                    <Route
+                      path="/actors/:id"
+                      element={<ActorDetailsPage />}
+                    />
+
+                    <Route
+                      path="/"
+                      element={<LandingPage />}
+                    />
+
+                    <Route
+                      path="*"
+                      element={<Navigate to="/" />}
+                    />
+                  </Routes>
+                </main>
+
+                <SiteFooter />
+              </div>
             </MoviesContextProvider>
           </ActorsContextProvider>
         </AuthContextProvider>

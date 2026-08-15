@@ -8,26 +8,27 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import { styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../contexts/authContext";
 import { supabase } from "../../supabaseClient";
-
-const styles = {
-  title: {
-    flexGrow: 1,
-  },
-};
+import logo from "../../images/daddy-movies-logo.svg";
 
 const Offset = styled("div")(
   ({ theme }) => theme.mixins.toolbar
 );
+
+type MenuType =
+  | "mobile"
+  | "movies"
+  | "actors"
+  | null;
 
 const SiteHeader: React.FC = () => {
   const navigate = useNavigate();
@@ -36,68 +37,102 @@ const SiteHeader: React.FC = () => {
   const [anchorEl, setAnchorEl] =
     useState<HTMLButtonElement | null>(null);
 
-  const open = Boolean(anchorEl);
+  const [menuType, setMenuType] =
+    useState<MenuType>(null);
+
   const theme = useTheme();
 
   const isMobile = useMediaQuery(
     theme.breakpoints.down("lg")
   );
 
-  const publicOptions = [
-    { label: "Home", path: "/" },
-    { label: "Upcoming", path: "/movies/upcoming" },
-    { label: "Actors", path: "/actors" },
-  ];
-
-  const authenticatedOptions = [
-    {
-      label: "Favorites",
-      path: "/movies/favourites",
-    },
-    {
-      label: "Favorite Actors",
-      path: "/actors/favourites",
-    },
-    {
-      label: "Log Out",
-      path: "/logout",
-    },
-  ];
-
-  const guestOptions = [
-    { label: "Sign Up", path: "/signup" },
-    { label: "Log In", path: "/login" },
-  ];
-
-  const menuOptions = user
-    ? [...publicOptions, ...authenticatedOptions]
-    : [...publicOptions, ...guestOptions];
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setAnchorEl(null);
-    navigate("/");
-  };
-
-  const handleMenuSelect = (pageURL: string) => {
-    if (pageURL === "/logout") {
-      handleLogout();
-      return;
-    }
-
-    navigate(pageURL);
-    setAnchorEl(null);
-  };
-
-  const handleMenu = (
-    event: MouseEvent<HTMLButtonElement>
-  ) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const open = Boolean(anchorEl);
 
   const displayName =
     user?.user_metadata.full_name ||
+    user?.user_metadata.name ||
     user?.email?.split("@")[0];
+
+  const guestOptions = [
+    {
+      label: "Movies",
+      path: "/movies",
+    },
+    {
+      label: "Upcoming",
+      path: "/movies/upcoming",
+    },
+    {
+      label: "Actors",
+      path: "/actors",
+    },
+    {
+      label: "Sign Up",
+      path: "/signup",
+    },
+    {
+      label: "Log In",
+      path: "/login",
+    },
+  ];
+
+  const movieOptions = [
+    {
+      label: "Discover Movies",
+      path: "/movies",
+    },
+    {
+      label: "Upcoming Movies",
+      path: "/movies/upcoming",
+    },
+    {
+      label: "Favourite Movies",
+      path: "/movies/favourites",
+    },
+  ];
+
+  const actorOptions = [
+    {
+      label: "Popular Actors",
+      path: "/actors",
+    },
+    {
+      label: "Favourite Actors",
+      path: "/actors/favourites",
+    },
+  ];
+
+  const closeMenu = () => {
+    setAnchorEl(null);
+    setMenuType(null);
+  };
+
+  const navigateTo = (path: string) => {
+    navigate(path);
+    closeMenu();
+  };
+
+  const openMenu = (
+    event: MouseEvent<HTMLButtonElement>,
+    type: MenuType
+  ) => {
+    setAnchorEl(event.currentTarget);
+    setMenuType(type);
+  };
+
+  const handleLogoClick = () => {
+    navigate(user ? "/dashboard" : "/");
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    closeMenu();
+    navigate("/");
+  };
+
+  const mobileOptions = user
+    ? [...movieOptions, ...actorOptions]
+    : guestOptions;
 
   return (
     <>
@@ -107,18 +142,35 @@ const SiteHeader: React.FC = () => {
         color="primary"
       >
         <Toolbar>
-          <Typography variant="h4" sx={styles.title}>
-            TMDB Client
-          </Typography>
-
-          <Typography variant="h6" sx={styles.title}>
-            All you ever wanted to know about Movies!
-          </Typography>
+          <Box
+            component="img"
+            src={logo}
+            alt="DaddyMovies"
+            onClick={handleLogoClick}
+            sx={{
+              width: {
+                xs: 170,
+                sm: 220,
+                md: 270,
+              },
+              height: 56,
+              objectFit: "contain",
+              objectPosition: "left center",
+              cursor: "pointer",
+              marginRight: "auto",
+            }}
+          />
 
           {user && (
             <Typography
               variant="body1"
-              sx={{ marginRight: 2 }}
+              sx={{
+                marginRight: 2,
+                display: {
+                  xs: "none",
+                  md: "block",
+                },
+              }}
             >
               Hello, {displayName}
             </Typography>
@@ -127,10 +179,10 @@ const SiteHeader: React.FC = () => {
           {isMobile ? (
             <>
               <IconButton
-                aria-label="menu"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
+                aria-label="navigation menu"
+                onClick={(event) =>
+                  openMenu(event, "mobile")
+                }
                 color="inherit"
                 size="large"
               >
@@ -138,25 +190,101 @@ const SiteHeader: React.FC = () => {
               </IconButton>
 
               <Menu
-                id="menu-appbar"
                 anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={open}
-                onClose={() => setAnchorEl(null)}
+                open={
+                  open && menuType === "mobile"
+                }
+                onClose={closeMenu}
               >
-                {menuOptions.map((option) => (
+                {user && (
+                  <MenuItem disabled>
+                    Hello, {displayName}
+                  </MenuItem>
+                )}
+
+                {mobileOptions.map((option) => (
                   <MenuItem
                     key={option.label}
                     onClick={() =>
-                      handleMenuSelect(option.path)
+                      navigateTo(option.path)
+                    }
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+
+                {user && (
+                  <MenuItem onClick={handleLogout}>
+                    Log Out
+                  </MenuItem>
+                )}
+              </Menu>
+            </>
+          ) : user ? (
+            <>
+              <Button
+                color="inherit"
+                onMouseEnter={(event) =>
+                  openMenu(event, "movies")
+                }
+              >
+                Movies
+              </Button>
+
+              <Button
+                color="inherit"
+                onMouseEnter={(event) =>
+                  openMenu(event, "actors")
+                }
+              >
+                Actors
+              </Button>
+
+              <Button
+                color="inherit"
+                onMouseEnter={closeMenu}
+                onClick={handleLogout}
+              >
+                Log Out
+              </Button>
+
+              <Menu
+                anchorEl={anchorEl}
+                open={
+                  open && menuType === "movies"
+                }
+                onClose={closeMenu}
+                MenuListProps={{
+                  onMouseLeave: closeMenu,
+                }}
+              >
+                {movieOptions.map((option) => (
+                  <MenuItem
+                    key={option.label}
+                    onClick={() =>
+                      navigateTo(option.path)
+                    }
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Menu>
+
+              <Menu
+                anchorEl={anchorEl}
+                open={
+                  open && menuType === "actors"
+                }
+                onClose={closeMenu}
+                MenuListProps={{
+                  onMouseLeave: closeMenu,
+                }}
+              >
+                {actorOptions.map((option) => (
+                  <MenuItem
+                    key={option.label}
+                    onClick={() =>
+                      navigateTo(option.path)
                     }
                   >
                     {option.label}
@@ -166,12 +294,12 @@ const SiteHeader: React.FC = () => {
             </>
           ) : (
             <>
-              {menuOptions.map((option) => (
+              {guestOptions.map((option) => (
                 <Button
                   key={option.label}
                   color="inherit"
                   onClick={() =>
-                    handleMenuSelect(option.path)
+                    navigateTo(option.path)
                   }
                 >
                   {option.label}

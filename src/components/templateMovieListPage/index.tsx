@@ -1,8 +1,11 @@
 import React from "react";
-import Header from "../headerMovieList";
 import Grid from "@mui/material/Grid";
+
+import Header from "../headerMovieList";
 import MovieList from "../movieList";
-import { MovieListPageTemplateProps } from "../../types/interfaces";
+import {
+  MovieListPageTemplateProps,
+} from "../../types/interfaces";
 
 const styles = {
   root: {
@@ -10,23 +13,31 @@ const styles = {
   },
 };
 
-const MovieListPageTemplate: React.FC<
-  MovieListPageTemplateProps
-> = ({ movies, title, action }) => {
-  return (
-    <>
-      <Header title={title} />
+const MovieListPageTemplate:
+  React.FC<MovieListPageTemplateProps> = ({
+    movies,
+    title,
+    action,
+    pagination,
+  }) => {
+    return (
+      <>
+        <Header title={title} />
 
-      <Grid container sx={styles.root}>
-        <Grid item container spacing={5}>
-          <MovieList
-            movies={movies}
-            action={action}
-          />
+        {pagination}
+
+        <Grid container sx={styles.root}>
+          <Grid item container spacing={5}>
+            <MovieList
+              movies={movies}
+              action={action}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </>
-  );
-};
+
+        {pagination}
+      </>
+    );
+  };
 
 export default MovieListPageTemplate;

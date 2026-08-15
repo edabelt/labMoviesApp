@@ -22,10 +22,13 @@ export interface BaseMovieProps {
 
 export interface BaseMovieListProps {
   movies: BaseMovieProps[];
-  action: (movie: BaseMovieProps) => ReactNode;
+  action: (
+    movie: BaseMovieProps
+  ) => ReactNode;
 }
 
-export interface MovieDetailsProps extends BaseMovieProps {
+export interface MovieDetailsProps
+  extends BaseMovieProps {
   genres: {
     id: number;
     name: string;
@@ -52,10 +55,14 @@ export interface MoviePageProps {
   images: MovieImage[];
 }
 
-export type FilterOption = "title" | "genre";
+export type FilterOption =
+  | "title"
+  | "genre";
 
-export interface MovieListPageTemplateProps extends BaseMovieListProps {
+export interface MovieListPageTemplateProps
+  extends BaseMovieListProps {
   title: string;
+  pagination?: ReactNode;
 }
 
 export interface Review {
@@ -92,10 +99,18 @@ export interface DiscoverMovies {
 export interface Actor {
   id: number;
   name: string;
-  profile_path: string;
+  profile_path: string | null;
 }
 
-export interface ActorDetailsProps extends Actor {
+export interface DiscoverActors {
+  page: number;
+  total_pages: number;
+  total_results: number;
+  results: Actor[];
+}
+
+export interface ActorDetailsProps
+  extends Actor {
   biography: string;
   birthday: string | null;
   deathday: string | null;
