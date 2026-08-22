@@ -53,9 +53,8 @@ const DashboardPage: React.FC = () => {
     {
       title: "My Playlists",
       description:
-        "Create themed movie collections.",
+        "Create and manage themed movie collections.",
       path: "/movies/playlists",
-      disabled: true,
     },
   ];
 
@@ -125,14 +124,11 @@ const DashboardPage: React.FC = () => {
 
               <Button
                 variant="contained"
-                disabled={option.disabled}
                 onClick={() =>
                   navigate(option.path)
                 }
               >
-                {option.disabled
-                  ? "Coming Soon"
-                  : "Open"}
+                Open
               </Button>
             </Paper>
           </Grid>

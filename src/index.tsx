@@ -26,6 +26,8 @@ import AddActorReviewPage from "./pages/addActorReviewPage";
 import SignUpPage from "./pages/signUpPage";
 import LoginPage from "./pages/loginPage";
 import DashboardPage from "./pages/dashboardPage";
+import PlaylistsPage from "./pages/playlistsPage";
+import PlaylistDetailsPage from "./pages/playlistDetailsPage";
 
 import SiteHeader from "./components/siteHeader";
 import SiteFooter from "./components/siteFooter";
@@ -83,6 +85,24 @@ const App: React.FC = () => {
                       element={
                         <ProtectedRoute>
                           <DashboardPage />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/movies/playlists"
+                      element={
+                        <ProtectedRoute>
+                          <PlaylistsPage />
+                        </ProtectedRoute>
+                      }
+                    />
+
+                    <Route
+                      path="/movies/playlists/:id"
+                      element={
+                        <ProtectedRoute>
+                          <PlaylistDetailsPage />
                         </ProtectedRoute>
                       }
                     />

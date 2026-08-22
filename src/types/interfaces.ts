@@ -118,3 +118,32 @@ export interface ActorDetailsProps
   popularity: number;
   known_for_department: string;
 }
+
+export interface Playlist {
+  id: number;
+  user_id: string;
+  title: string;
+  theme: string;
+  cover_path: string | null;
+  created_at: string;
+}
+
+export interface PlaylistMovie {
+  id: number;
+  playlist_id: number;
+  movie_id: number;
+  title: string;
+  poster_path: string | null;
+  position: number;
+  added_at: string;
+}
+
+export interface CreatePlaylist {
+  title: string;
+  theme: string;
+}
+
+export interface CreatePlaylistRequest
+  extends CreatePlaylist {
+  coverFile: File | null;
+}

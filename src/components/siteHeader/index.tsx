@@ -12,7 +12,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Box from "@mui/material/Box";
-import { styled, useTheme } from "@mui/material/styles";
+import {
+  styled,
+  useTheme,
+} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 
@@ -89,6 +92,10 @@ const SiteHeader: React.FC = () => {
       label: "Favourite Movies",
       path: "/movies/favourites",
     },
+    {
+      label: "My Playlists",
+      path: "/movies/playlists",
+    },
   ];
 
   const actorOptions = [
@@ -131,7 +138,14 @@ const SiteHeader: React.FC = () => {
   };
 
   const mobileOptions = user
-    ? [...movieOptions, ...actorOptions]
+    ? [
+        {
+          label: "Dashboard",
+          path: "/dashboard",
+        },
+        ...movieOptions,
+        ...actorOptions,
+      ]
     : guestOptions;
 
   return (
@@ -163,12 +177,18 @@ const SiteHeader: React.FC = () => {
 
           {user && (
             <Typography
-              variant="body1"
+              variant="body2"
               sx={{
                 marginRight: 2,
+                paddingX: 2,
+                paddingY: 0.75,
+                borderRadius: 5,
+                backgroundColor:
+                  "rgba(255, 255, 255, 0.16)",
+                whiteSpace: "nowrap",
                 display: {
                   xs: "none",
-                  md: "block",
+                  lg: "block",
                 },
               }}
             >
@@ -192,7 +212,8 @@ const SiteHeader: React.FC = () => {
               <Menu
                 anchorEl={anchorEl}
                 open={
-                  open && menuType === "mobile"
+                  open &&
+                  menuType === "mobile"
                 }
                 onClose={closeMenu}
               >
@@ -202,19 +223,25 @@ const SiteHeader: React.FC = () => {
                   </MenuItem>
                 )}
 
-                {mobileOptions.map((option) => (
-                  <MenuItem
-                    key={option.label}
-                    onClick={() =>
-                      navigateTo(option.path)
-                    }
-                  >
-                    {option.label}
-                  </MenuItem>
-                ))}
+                {mobileOptions.map(
+                  (option) => (
+                    <MenuItem
+                      key={option.label}
+                      onClick={() =>
+                        navigateTo(
+                          option.path
+                        )
+                      }
+                    >
+                      {option.label}
+                    </MenuItem>
+                  )
+                )}
 
                 {user && (
-                  <MenuItem onClick={handleLogout}>
+                  <MenuItem
+                    onClick={handleLogout}
+                  >
                     Log Out
                   </MenuItem>
                 )}
@@ -224,8 +251,21 @@ const SiteHeader: React.FC = () => {
             <>
               <Button
                 color="inherit"
+                onMouseEnter={closeMenu}
+                onClick={() =>
+                  navigateTo("/dashboard")
+                }
+              >
+                Dashboard
+              </Button>
+
+              <Button
+                color="inherit"
                 onMouseEnter={(event) =>
-                  openMenu(event, "movies")
+                  openMenu(
+                    event,
+                    "movies"
+                  )
                 }
               >
                 Movies
@@ -234,7 +274,10 @@ const SiteHeader: React.FC = () => {
               <Button
                 color="inherit"
                 onMouseEnter={(event) =>
-                  openMenu(event, "actors")
+                  openMenu(
+                    event,
+                    "actors"
+                  )
                 }
               >
                 Actors
@@ -251,60 +294,76 @@ const SiteHeader: React.FC = () => {
               <Menu
                 anchorEl={anchorEl}
                 open={
-                  open && menuType === "movies"
+                  open &&
+                  menuType === "movies"
                 }
                 onClose={closeMenu}
                 MenuListProps={{
-                  onMouseLeave: closeMenu,
+                  onMouseLeave:
+                    closeMenu,
                 }}
               >
-                {movieOptions.map((option) => (
-                  <MenuItem
-                    key={option.label}
-                    onClick={() =>
-                      navigateTo(option.path)
-                    }
-                  >
-                    {option.label}
-                  </MenuItem>
-                ))}
+                {movieOptions.map(
+                  (option) => (
+                    <MenuItem
+                      key={option.label}
+                      onClick={() =>
+                        navigateTo(
+                          option.path
+                        )
+                      }
+                    >
+                      {option.label}
+                    </MenuItem>
+                  )
+                )}
               </Menu>
 
               <Menu
                 anchorEl={anchorEl}
                 open={
-                  open && menuType === "actors"
+                  open &&
+                  menuType === "actors"
                 }
                 onClose={closeMenu}
                 MenuListProps={{
-                  onMouseLeave: closeMenu,
+                  onMouseLeave:
+                    closeMenu,
                 }}
               >
-                {actorOptions.map((option) => (
-                  <MenuItem
-                    key={option.label}
-                    onClick={() =>
-                      navigateTo(option.path)
-                    }
-                  >
-                    {option.label}
-                  </MenuItem>
-                ))}
+                {actorOptions.map(
+                  (option) => (
+                    <MenuItem
+                      key={option.label}
+                      onClick={() =>
+                        navigateTo(
+                          option.path
+                        )
+                      }
+                    >
+                      {option.label}
+                    </MenuItem>
+                  )
+                )}
               </Menu>
             </>
           ) : (
             <>
-              {guestOptions.map((option) => (
-                <Button
-                  key={option.label}
-                  color="inherit"
-                  onClick={() =>
-                    navigateTo(option.path)
-                  }
-                >
-                  {option.label}
-                </Button>
-              ))}
+              {guestOptions.map(
+                (option) => (
+                  <Button
+                    key={option.label}
+                    color="inherit"
+                    onClick={() =>
+                      navigateTo(
+                        option.path
+                      )
+                    }
+                  >
+                    {option.label}
+                  </Button>
+                )
+              )}
             </>
           )}
         </Toolbar>
